@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"testing"
 )
@@ -30,18 +29,46 @@ func TestTell(t *testing.T) {
 
 func TestTokenError(t *testing.T) {
 	cases := []struct {
-		input string
-		want  error
-		get   error
+		input      string
+		wantNotNil bool
+		getNotNil  bool
 	}{
-		{"", errors.New("No input for tokenizing provided"), nil},
-		{" ", errors.New("Trailing space"), nil},
-		{"fds", nil, nil},
+		{"", true, false},
+		{" ", true, false},
+		{"fds", false, false},
 	}
 	for _, val := range cases {
-		_, val.get = tokenize(val.input)
+		_, err := tokenize(val.input)
+		if err != nil {
+			val.getNotNil = true
+		} else {
+			val.getNotNil = false
+		}
+		if val.getNotNil != val.wantNotNil {
+			t.Errorf("expected '%v', got '%v' with input '%s'", val.wantNotNil, val.getNotNil, val.input)
+		}
+	}
+}
+
+func TestTokenPrint(t *testing.T) {
+	cases := []struct {
+		input []Token
+		want  string
+		get   string
+	}{
+		{[]Token{{"test", 0}, {"other", 5}}, "(test, 0) (other, 5)", ""},
+		{nil, "", ""},
+	}
+	for _, val := range cases {
+		var err error
+		val.get, err = printTokens(val.input)
+		if err != nil {
+			if val.input != nil {
+				t.Errorf("Expected no error but got '%s'", err.Error())
+			}
+		}
 		if val.get != val.want {
-			t.Errorf("expected '%v', got '%v' with input '%s'", val.want, val.get, val.input)
+			t.Errorf("wanted string '%s', got '%s'", val.want, val.get)
 		}
 	}
 }

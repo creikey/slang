@@ -44,5 +44,6 @@ func printTokens(tok []Token) (string, error) {
 	for _, val := range tok {
 		toReturn += fmt.Sprintf("%v ", val)
 	}
+	toReturn = toReturn[:len(toReturn)-1]
 	return toReturn, nil
 }

@@ -24,6 +24,11 @@ func main() {
 	}
 	// Loop over until no more input
 	for ; text != ""; text, _ = getInput(reader) {
-		log.Println(text)
+		tk, err := tokenize(text)
+		if err != nil {
+			log.Fatal(err)
+		} else {
+			printTokens(tk)
+		}
 	}
 }
