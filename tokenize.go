@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -9,6 +10,10 @@ import (
 type Token struct {
 	Content string
 	Column  int
+}
+
+func (t Token) String() string {
+	return fmt.Sprintf("(%s, %d)", t.Content, t.Column)
 }
 
 // Tokenizes input
@@ -27,6 +32,17 @@ func tokenize(raw string) ([]Token, error) {
 			toReturn[i] = Token{rawSlices[i], cur}
 			cur += len(content) + 1
 		}
+	}
+	return toReturn, nil
+}
+
+func printTokens(tok []Token) (string, error) {
+	if tok == nil {
+		return "", errors.New("Pass a non-nil slice of tokens")
+	}
+	toReturn := ""
+	for _, val := range tok {
+		toReturn += fmt.Sprintf("%v ", val)
 	}
 	return toReturn, nil
 }
