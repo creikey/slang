@@ -13,7 +13,7 @@ type testCase struct {
 func TestTell(t *testing.T) {
 	rawStr := "TELL hello testing more !! 3212j"
 	wanted := []Token{{"TELL", 0}, {"hello", 5}, {"testing", 11}, {"more", 19}, {"!!", 24}, {"3212j", 27}}
-	tok, err := tokenize(rawStr)
+	tok, err := tokenize(rawStr, 0)
 	if err != nil {
 		t.Error(err)
 	}
@@ -36,16 +36,18 @@ func TestTokenError(t *testing.T) {
 		{"", true, false},
 		{" ", true, false},
 		{"fds", false, false},
+		{"fddsfdks ", true, false},
+		{"  d", true, false},
 	}
-	for _, val := range cases {
-		_, err := tokenize(val.input)
+	for i, val := range cases {
+		_, err := tokenize(val.input, i)
 		if err != nil {
 			val.getNotNil = true
 		} else {
 			val.getNotNil = false
 		}
 		if val.getNotNil != val.wantNotNil {
-			t.Errorf("expected '%v', got '%v' with input '%s'", val.wantNotNil, val.getNotNil, val.input)
+			t.Errorf("expected '%v', got '%v' with input '%s' and error '%s'", val.wantNotNil, val.getNotNil, val.input, err.Error())
 		}
 	}
 }

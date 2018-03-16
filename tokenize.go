@@ -17,19 +17,31 @@ func (t Token) String() string {
 }
 
 // Tokenizes input
-func tokenize(raw string) ([]Token, error) {
+func tokenize(raw string, line int) ([]Token, error) {
 	if raw == "" {
 		return nil, errors.New("No input for tokenizing provided")
 	}
 	if raw[len(raw)-1:] == " " {
-		return nil, errors.New("Trailing space")
+		return nil, fmt.Errorf("Trailing space at line %d", line)
+	}
+	err := Lint(raw)
+	if err != nil {
+		return nil, err
 	}
 	rawSlices := strings.Split(raw, " ")
-	toReturn := make([]Token, len(rawSlices), len(rawSlices))
+	toReturn := make([]Token, 0, len(rawSlices))
 	cur := 0
-	for i, content := range rawSlices {
-		if content != "" {
+	for _, content := range rawSlices {
+		/*if content != "" && content != " " {
 			toReturn[i] = Token{rawSlices[i], cur}
+			cur += len(content) + 1
+		}*/
+		if content != "" {
+			if content == " " {
+				cur++
+				continue
+			}
+			toReturn = append(toReturn, Token{content, cur})
 			cur += len(content) + 1
 		}
 	}
