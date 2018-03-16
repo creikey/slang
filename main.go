@@ -24,12 +24,13 @@ func main() {
 		panic(err)
 	}
 	// Loop over until no more input
-	for ; text != ""; text, _ = getInput(reader) {
-		tk, err := tokenize(text)
+	for ln := 0; text != ""; text, _ = getInput(reader) {
+		tk, err := tokenize(text, ln)
 		if err != nil {
 			log.Fatal(err)
 		} else {
 			fmt.Println(printTokens(tk))
 		}
+		ln++
 	}
 }
