@@ -1,4 +1,4 @@
-package main
+package linter
 
 import (
 	"strings"
@@ -11,7 +11,7 @@ func lintForDoubleSpaces(toLint string, line int) error {
 	prev := '0'
 	for i, val := range toLint {
 		if val == ' ' && prev == ' ' {
-			return SyntaxError{Line: line, Column: i, Desc: "Double Spaces"}
+			return cerror.SyntaxError{Line: line, Column: i, Desc: "Double Spaces"}
 		}
 		prev = val
 	}

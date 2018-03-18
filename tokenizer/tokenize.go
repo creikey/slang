@@ -1,9 +1,11 @@
-package main
+package tokenizer
 
 import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/creikey/slang/linter"
 )
 
 // Token is a section of code with info for debugging
@@ -24,7 +26,7 @@ func Tokenize(raw string, line int) ([]Token, error) {
 	if raw[len(raw)-1:] == " " {
 		return nil, fmt.Errorf("Trailing space at line %d", line)
 	}
-	err := Lint(raw)
+	err := linter.Lint(raw)
 	if err != nil {
 		return nil, err
 	}
