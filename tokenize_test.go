@@ -1,55 +1,83 @@
 package main
 
 import (
-	"fmt"
 	"testing"
+
+	"github.com/creikey/thelper"
 )
 
-type testCase struct {
-	want string
-	get  string
+func compareTokens(tok1, tok2 []Token) (bool, int) {
+	for i := range tok1 {
+		if tok1[i] != tok2[i] {
+			return false, i
+		}
+	}
+	return true, 0
 }
 
 func TestTell(t *testing.T) {
-	rawStr := "TELL hello testing more !! 3212j"
-	wanted := []Token{{"TELL", 0}, {"hello", 5}, {"testing", 11}, {"more", 19}, {"!!", 24}, {"3212j", 27}}
-	tok, err := tokenize(rawStr, 0)
-	if err != nil {
-		t.Error(err)
+	cases := []struct {
+		input    string
+		line     int
+		wantToks []Token
+	}{
+		{
+			"TELL hello",
+			0,
+			[]Token{
+				{"TELL", 0},
+				{"hello", 5},
+			},
+		},
 	}
-	for i := range tok {
-		if tok[i].Content != wanted[i].Content {
-			t.Error(fmt.Errorf("token %s not equal to token %s at %d", tok[i].Content, wanted[i].Content, i))
+	for _, val := range cases {
+		toks, err := Tokenize(val.input, val.line)
+		if err != nil {
+			t.Error(err)
 		}
-		if tok[i].Column != wanted[i].Column {
-			t.Error(fmt.Errorf("token column %d for token %s not equal to token column %d for token %s", tok[i].Column, tok[i].Content, wanted[i].Column, wanted[i].Content))
+		eq, index := compareTokens(val.wantToks, toks)
+		if eq == false {
+			t.Errorf("Wanted token (%v), but got token (%v) for input (%s)", val.wantToks[index], toks[index], val.input)
 		}
 	}
 }
 
 func TestTokenError(t *testing.T) {
-	cases := []struct {
-		input      string
-		wantNotNil bool
-		getNotNil  bool
-	}{
-		{"", true, false},
-		{" ", true, false},
-		{"fds", false, false},
-		{"fddsfdks ", true, false},
-		{"  d", true, false},
+	cases := []thelper.ErrNameCase{
+		{
+			InputDesc: "",
+			ErrFunc: func() error {
+				err := lintForDoubleSpaces("", 0)
+				return err
+			},
+			WantErrName: "FatalError",
+		},
+		{
+			InputDesc: " ",
+			ErrFunc: func() error {
+				err := lintForDoubleSpaces(" ", 0)
+				return err
+			},
+			WantErrName: "SyntaxError",
+		},
+		{
+			InputDesc: "fds",
+			ErrFunc: func() error {
+				err := lintForDoubleSpaces("fds", 0)
+				return err
+			},
+			WantErrName: "nil",
+		},
+		{
+			InputDesc: " d",
+			ErrFunc: func() error {
+				err := lintForDoubleSpaces(" d", 0)
+				return err
+			},
+			WantErrName: "nil",
+		},
 	}
-	for i, val := range cases {
-		_, err := tokenize(val.input, i)
-		if err != nil {
-			val.getNotNil = true
-		} else {
-			val.getNotNil = false
-		}
-		if val.getNotNil != val.wantNotNil {
-			t.Errorf("expected '%v', got '%v' with input '%s' and error '%s'", val.wantNotNil, val.getNotNil, val.input, err.Error())
-		}
-	}
+	thelper.CheckErrName(cases, t)
 }
 
 func TestTokenPrint(t *testing.T) {

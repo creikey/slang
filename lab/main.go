@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"reflect"
 )
 
 type numberError struct {
@@ -23,12 +24,11 @@ func isNumber(toTest rune) error {
 
 func main() {
 	test := isNumber('d')
-	switch test {
-	case numberError:
-		log.Println("Found a number error")
-		break
-	default:
-		log.Println("Default")
+	v := reflect.TypeOf(test)
+	if v.Name() == "numberError" {
+		fmt.Println("Num error")
+	} else {
+		fmt.Println(fmt.Sprintf("Not num error. Is %s", v.Name()))
 	}
 	if test != nil {
 		log.Fatal(test)

@@ -17,7 +17,7 @@ func (t Token) String() string {
 }
 
 // Tokenizes input
-func tokenize(raw string, line int) ([]Token, error) {
+func Tokenize(raw string, line int) ([]Token, error) {
 	if raw == "" {
 		return nil, errors.New("No input for tokenizing provided")
 	}

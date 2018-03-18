@@ -25,7 +25,7 @@ func main() {
 	}
 	// Loop over until no more input
 	for ln := 0; text != ""; text, _ = getInput(reader) {
-		tk, err := tokenize(text, ln)
+		tk, err := Tokenize(text, ln)
 		if err != nil {
 			log.Fatal(err)
 		} else {
