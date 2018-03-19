@@ -9,7 +9,7 @@ type FatalEvent string
 
 const (
 	// NOCONTENT is when nothing is provided to be interpreted
-	NOCONTENT = FatalEvent("is when nothing is provided to be interpreted")
+	NOCONTENT = FatalEvent("nothing is provided to be interpreted")
 )
 
 // FatalError is a catastrophic error where the interpreter cannot continue
