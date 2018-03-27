@@ -17,6 +17,22 @@ func TestDoubleSpace(t *testing.T) {
 			},
 			WantErrName: "nil",
 		},
+		{
+			InputDesc: "  ",
+			ErrFunc: func() error {
+				err := lintForDoubleSpaces("  ", 0)
+				return err
+			},
+			WantErrName: "SyntaxError",
+		},
+		{
+			InputDesc: "fjdklsfjlkds   fdlksfjlsdkjflds fdslfdslf dsf  slkdj",
+			ErrFunc: func() error {
+				err := lintForDoubleSpaces("fjdklsfjlkds   fdlksfjlsdkjflds fdslfdslf dsf  slkdj", 0)
+				return err
+			},
+			WantErrName: "SyntaxError",
+		},
 	}
 	thelper.CheckErrName(cases, t)
 	/*cases := []struct {
@@ -42,6 +58,19 @@ func TestDoubleSpace(t *testing.T) {
 			}
 		}
 	}*/
+}
+
+func TestTrailingSpace(t *testing.T) {
+	cases := []ErrNameCase {
+		{
+			InputDesc: "dfldlfldsljfsd ",
+			ErrFunc: func() error {
+				err := lintForTrailingSpace("dfldlfldsljfsd ", 0)
+				return err
+			},
+			WantErrName: "FatalError",
+		}
+	}
 }
 
 /*func TestTrailingSpace(t *testing.T) {

@@ -1,5 +1,7 @@
 package cerror
 
+//TODO refactor entire library so that there's a standard error command and not a janky unit test library
+
 import (
 	"fmt"
 )

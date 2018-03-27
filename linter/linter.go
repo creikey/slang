@@ -2,6 +2,8 @@ package linter
 
 import (
 	"strings"
+
+	"github.com/creikey/slang/cerror"
 )
 
 func lintForDoubleSpaces(toLint string, line int) error {
